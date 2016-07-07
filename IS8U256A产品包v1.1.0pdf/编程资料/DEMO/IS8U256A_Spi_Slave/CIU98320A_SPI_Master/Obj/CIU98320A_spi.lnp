@@ -1,5 +1,0 @@
---cpu ARM7TDMI "..\obj\startup.o" "..\obj\ciu98320a_interrupt.o" "..\obj\ciu98320a_main.o" "..\obj\ciu98320a_spi.o" "..\obj\ciu98320a_sysclk.o" "..\obj\ciu98320a_gpio.o" --feedback "..\Obj\CIU98320A_spi.fed" 
---strict --scatter "..\Obj\CIU98320A_spi.sct" 
---autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
---info sizes --info totals --info unused --info veneers 
- --list ".\CIU98320A_spi.map" -o "..\Obj\CIU98320A_spi.axf"
