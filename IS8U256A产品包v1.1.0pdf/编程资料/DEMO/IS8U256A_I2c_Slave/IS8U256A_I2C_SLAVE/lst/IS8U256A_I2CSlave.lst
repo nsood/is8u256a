@@ -1,0 +1,216 @@
+C51 COMPILER V9.02   IS8U256A_I2CSLAVE                                                     12/11/2014 10:39:06 PAGE 1   
+
+
+C51 COMPILER V9.02, COMPILATION OF MODULE IS8U256A_I2CSLAVE
+OBJECT MODULE PLACED IN .\obj\IS8U256A_I2CSlave.obj
+COMPILER INVOKED BY: d:\Keil\C51\BIN\C51.EXE src\IS8U256A_I2CSlave.c BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\IS8U256A_I2CS
+                    -lave.lst) OBJECT(.\obj\IS8U256A_I2CSlave.obj)
+
+line level    source
+
+   1          /*********************************************************************
+   2          *               Copyright(C)2012北京华大信安科技有限公司
+   3          *                       All Rights Reserved      
+   4          *
+   5          * 文件名称：    IS8U256A_I2CSlave.c
+   6          * 作    者：    李宪法
+   7          * 版    本：    V1.0.0
+   8          * 日    期：    2013-11
+   9          * 功能描述：    
+  10          * 功能列表：    
+  11          *
+  12          * 历史记录：
+  13          * 1.  日期：    
+  14          *         版本：
+  15          *         作者：
+  16          * 修改内容：
+  17          *
+  18          *********************************************************************/
+  19          
+  20          /*Includes----------------------------------------------------------*/
+  21          #include "..\inc\IS8U256X.h"
+  22          #include "..\inc\IS8U256A_GPIO.h"
+  23          #include "..\inc\IS8U256A_I2CSlave.h"
+  24          
+  25          /*Private typedef---------------------------------------------------*/
+  26          /*Private define----------------------------------------------------*/
+  27          /*Private macro-----------------------------------------------------*/
+  28          /*I2C-SLAVE设备的地址：0xAA*/
+  29          /*注意：该地址根据具体应用而不同*/
+  30          #define I2C_SLAVE_ADDRESS               0xAA
+  31          
+  32          /*Private variables-------------------------------------------------*/
+  33          /*Private function prototypes---------------------------------------*/
+  34          /*Private functions-------------------------------------------------*/
+  35          
+  36          /********************************************************************
+  37           * Function Name        :I2CSlaveInit
+  38           * Description          :
+  39           * Argument             :
+  40           * Return               :
+  41          *********************************************************************/
+  42          void I2CSlaveInit(void)
+  43          {
+  44   1              /*使能I2C模块*/
+  45   1              PCON2 |= 0x08; 
+  46   1      
+  47   1              /*使能GPIO模块*/
+  48   1              PCON1 |= 0x08;
+  49   1      
+  50   1              /*GPIO13/14复用为I2C接口*/
+  51   1              COMCON |= 0x80;
+  52   1      
+  53   1              /*选择I2C接口寄存器组*/
+  54   1              COMSEL |= 0x03;
+C51 COMPILER V9.02   IS8U256A_I2CSLAVE                                                     12/11/2014 10:39:06 PAGE 2   
+
+  55   1      
+  56   1              /*配置I2C-Slave模式地址*/
+  57   1              I2CADDR = I2C_SLAVE_ADDRESS&0xFE;
+  58   1      }
+  59          
+  60          /********************************************************************
+  61           * Function Name        :I2CSlavePrepareToTransmit
+  62           * Description          :
+  63           * Argument             :
+  64           * Return               :
+  65          *********************************************************************/
+  66          Direction_TypeDef I2CSlavePrepareToTransmit(void)
+  67          {
+  68   1              while(1)
+  69   1              {
+  70   2                      /*发送准备就绪信号*/
+  71   2                      I2CSlaveRDYSet();
+  72   2      
+  73   2                      /*清除准备就绪信号*/
+  74   2                      I2CSlaveRDYClr();
+  75   2      
+  76   2                      /*等待总线上I2C-Master设备发起Start/ReStart信号*/
+  77   2                      while(0x0==(0x20&I2CSTATUS));
+  78   2      
+  79   2                      /*等待控制字节传输完成*/
+  80   2                      while(0x0==(0x80&I2CSTATUS));
+  81   2      
+  82   2                      /*判断地址是否匹配*/
+  83   2                      if(0x0==(0x40&I2CSTATUS))
+  84   2                              continue;
+  85   2      
+  86   2                      /*判断后续数据的传输方向*/
+  87   2                      if(0x0==(0x04&I2CSTATUS))
+  88   2                              return SLAVE_INPUT;
+  89   2                      else
+  90   2                              return SLAVE_OUTPUT;
+  91   2              }
+  92   1      
+  93   1      }
+  94          
+  95          /********************************************************************
+  96           * Function Name        :I2CSlaveSendByte
+  97           * Description          :
+  98           * Argument             :
+  99           * Return               :
+ 100          *********************************************************************/
+ 101          void I2CSlaveSendByte(unsigned char ch)
+ 102          {
+ 103   1              /*判断ACK信号*/
+ 104   1              if(0x0==(0x01&I2CSTATUS))
+ 105   1              {
+ 106   2                      /*待发送数据写入寄存器*/
+ 107   2                      I2CTDR = ch;
+ 108   2              
+ 109   2                      /*设置可传输数据标志*/
+ 110   2                      I2CCON &= 0xF7;
+ 111   2      
+ 112   2                      /*清除传输完成标志*/
+ 113   2                      I2CCON |= 0x01;
+ 114   2      
+ 115   2                      /*发送准备就绪信号*/
+ 116   2                      I2CSlaveRDYSet();
+C51 COMPILER V9.02   IS8U256A_I2CSLAVE                                                     12/11/2014 10:39:06 PAGE 3   
+
+ 117   2      
+ 118   2                      /*清除准备就绪信号*/
+ 119   2                      I2CSlaveRDYClr();
+ 120   2      
+ 121   2                      /*等待传输完成*/
+ 122   2                      while(0x0==(0x80&I2CSTATUS));
+ 123   2              }
+ 124   1      }
+ 125          
+ 126          /********************************************************************
+ 127           * Function Name        :I2CSlaveReceByte
+ 128           * Description          :
+ 129           * Argument             :
+ 130           * Return               :
+ 131          *********************************************************************/
+ 132          unsigned char I2CSlaveReceByte(void)
+ 133          {
+ 134   1              /*设置可传输数据标志*/
+ 135   1              I2CCON &= 0xF7;
+ 136   1      
+ 137   1              /*清除传输完成标志*/
+ 138   1              I2CCON |= 0x01;
+ 139   1      
+ 140   1              /*发送准备就绪信号*/
+ 141   1              I2CSlaveRDYSet();
+ 142   1      
+ 143   1              /*清除准备就绪信号*/
+ 144   1              I2CSlaveRDYClr();
+ 145   1      
+ 146   1              /*等待传输完成*/
+ 147   1              while(0x0==(0x80&I2CSTATUS));
+ 148   1              
+ 149   1              /*读取传输的数据*/
+ 150   1              return I2CRDR;
+ 151   1      }
+ 152          
+ 153          /********************************************************************
+ 154           * Function Name        :I2CSlaveRDYSet
+ 155           * Description          :
+ 156           * Argument             :
+ 157           * Return               :
+ 158          *********************************************************************/
+ 159          void I2CSlaveRDYSet(void)
+ 160          {
+ 161   1              /*************************
+ 162   1               *
+ 163   1               *增加用户自己的标志处理代码
+ 164   1               *
+ 165   1               * ***********************/
+ 166   1              GPIOSet(GPIO_PIN_20);
+ 167   1              
+ 168   1      }
+ 169          
+ 170          /********************************************************************
+ 171           * Function Name        :I2CSlaveRDYClr
+ 172           * Description          :
+ 173           * Argument             :
+ 174           * Return               :
+ 175          *********************************************************************/
+ 176          void I2CSlaveRDYClr(void)
+ 177          {
+ 178   1              /*************************
+C51 COMPILER V9.02   IS8U256A_I2CSLAVE                                                     12/11/2014 10:39:06 PAGE 4   
+
+ 179   1               *
+ 180   1               *增加用户自己的标志处理代码
+ 181   1               *
+ 182   1               * ***********************/
+ 183   1              GPIOReset(GPIO_PIN_20);
+ 184   1      
+ 185   1      }
+ 186          /************************end of file*********************************/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    109    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

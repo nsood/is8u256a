@@ -1,0 +1,7 @@
+".\obj\STARTUP.obj",
+".\obj\Test.obj",
+".\obj\IS8U256A_I2CSlave.obj",
+".\obj\IS8U256A_GPIO.obj" 
+TO ".\obj\I2C-Test" 
+PRINT(".\lst\I2C-Test.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

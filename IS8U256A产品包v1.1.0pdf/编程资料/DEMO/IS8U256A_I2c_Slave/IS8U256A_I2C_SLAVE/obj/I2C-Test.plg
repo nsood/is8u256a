@@ -1,0 +1,16 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+D:\项目\14年项目\1302产品包升级v1.0.0word\1302产品包v1.0.0\编程资料\DEMO\IS8U256A_I2c_Slave\IS8U256A_I2C_SLAVE\I2C-Test.uvproj
+Project File Date:  01/03/2014
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling Test.c...
+compiling IS8U256A_I2CSlave.c...
+compiling IS8U256A_GPIO.c...
+linking...
+Program Size: data=17.0 xdata=132 code=706
+".\obj\I2C-Test" - 0 Error(s), 0 Warning(s).

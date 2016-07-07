@@ -1,0 +1,1 @@
+--feedback "..\Obj\CIU98320A_spi.fed" -c --cpu ARM7TDMI -g -O0 --apcs=interwork -I..\Inc -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\HED" -o "..\Obj\ciu98320a_sysclk.o" --omf_browse "..\Obj\ciu98320a_sysclk.crf" --depend "..\Obj\ciu98320a_sysclk.d" "..\Source\CIU98320A_sysclk.c"

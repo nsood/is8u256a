@@ -1,0 +1,1 @@
+--feedback "..\Obj\CIU98320A_spi.fed" -c --cpu ARM7TDMI -g -O0 --apcs=interwork -I..\Inc -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\HED" -o "..\Obj\ciu98320a_gpio.o" --omf_browse "..\Obj\ciu98320a_gpio.crf" --depend "..\Obj\ciu98320a_gpio.d" "..\Source\CIU98320A_gpio.c"

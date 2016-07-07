@@ -1,0 +1,9 @@
+".\obj\STARTUP.obj",
+".\obj\Test.obj",
+".\obj\IS8U256A_SPISlave.obj",
+".\obj\IS8U256A_GPIO.obj" 
+TO ".\obj\Spi_Slave" 
+PRINT(".\lst\Spi_Slave.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 
+CODE( 0X0000-0X7FFE )
+XDATA( 0X0000-0XFFFE )

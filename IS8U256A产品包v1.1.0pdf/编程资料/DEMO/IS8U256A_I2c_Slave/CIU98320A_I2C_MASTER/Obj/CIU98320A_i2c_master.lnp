@@ -1,0 +1,4 @@
+--cpu ARM7TDMI "..\obj\startup.o" "..\obj\ciu98320a_interrupt.o" "..\obj\ciu98320a_main.o" "..\obj\ciu98320a_i2c_master.o" "..\obj\ciu98320a_sysclk.o" "..\obj\ciu98320a_gpio.o" --strict --scatter "..\Obj\CIU98320A_i2c_master.sct" 
+--autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\CIU98320A_i2c_master.map" -o "..\Obj\CIU98320A_i2c_master.axf"

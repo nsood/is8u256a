@@ -1,0 +1,16 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+D:\项目\14年项目\1302产品包升级v1.0.0word\1302产品包v1.0.0\编程资料\DEMO\IS8U256A_Uart\UART.uvproj
+Project File Date:  10/14/2014
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+compiling IS8U256A_GPIO.c...
+linking...
+Program Size: data=9.0 xdata=315 code=1959
+".\obj\UART" - 0 Error(s), 0 Warning(s).

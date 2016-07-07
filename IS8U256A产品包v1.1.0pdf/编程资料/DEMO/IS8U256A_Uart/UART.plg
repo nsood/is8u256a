@@ -1,0 +1,186 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+F:\work_ing\XA1302产品包\软件设计2\调试中版本\调试工程\UART\UART.uvproj
+Project File Date:  11/26/2013
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=0 code=826
+"UART" - 0 Error(s), 1 Warning(s).
+Clean started: Project: 'UART'
+   deleting intermediate output files for target 'Target 1'
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=0 code=826
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=0 code=826
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Clean started: Project: 'UART'
+   deleting intermediate output files for target 'Target 1'
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=0 code=826
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=959
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling IS8U256A_UART.c...
+..\..\FILES TO DEBUG\IS8U256A_UART.C(89): error C202: 'PLLCON': undefined identifier
+..\..\FILES TO DEBUG\IS8U256A_UART.C(92): error C202: 'PLLCON': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+Program Size: data=53.0 xdata=1 code=972
+".\obj\UART" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Clean started: Project: 'UART'
+   deleting intermediate output files for target 'Target 1'
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Clean started: Project: 'UART'
+   deleting intermediate output files for target 'Target 1'
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Clean started: Project: 'UART'
+   deleting intermediate output files for target 'Target 1'
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling UART-Test.C...
+compiling IS8U256A_UART.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=53.0 xdata=1 code=967
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+SRC\UART-TEST.C(13): warning C206: 'pritnf': missing function-prototype
+SRC\UART-TEST.C(13): error C267: 'pritnf': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling UART-Test.C...
+SRC\UART-TEST.C(15): warning C206: 'pritnf': missing function-prototype
+SRC\UART-TEST.C(15): error C267: 'pritnf': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling UART-Test.C...
+SRC\UART-TEST.C(16): warning C206: 'pritnf': missing function-prototype
+SRC\UART-TEST.C(16): error C267: 'pritnf': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=54.1 xdata=1 code=2023
+".\obj\UART" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_FPUTC?UART_TEST
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=54.1 xdata=1 code=2031
+".\obj\UART" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_FPUTC?UART_TEST
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=54.1 xdata=1 code=2026
+".\obj\UART" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling UART-Test.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UARTSENDBYTE?IS8U256A_UART
+Program Size: data=54.1 xdata=1 code=2023
+".\obj\UART" - 0 Error(s), 1 Warning(s).

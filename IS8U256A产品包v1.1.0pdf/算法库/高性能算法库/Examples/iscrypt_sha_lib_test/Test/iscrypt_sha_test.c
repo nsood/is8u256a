@@ -1,0 +1,481 @@
+#include <string.h>
+#include "iscrypt_sha.h"
+
+unsigned char xdata space_for_test[1024];
+
+unsigned char code SHA_VECTOR[] = 
+{
+	0X61,0X62,0X63,0X64,0X62,0X63,0X64,0X65,	\
+	0X63,0X64,0X65,0X66,0X64,0X65,0X66,0X67,	\
+	0X65,0X66,0X67,0X68,0X66,0X67,0X68,0X69,	\
+	0X67,0X68,0X69,0X6A,0X68,0X69,0X6A,0X6B,	\
+	0X69,0X6A,0X6B,0X6C,0X6A,0X6B,0X6C,0X6D,	\
+	0X6B,0X6C,0X6D,0X6E,0X6C,0X6D,0X6E,0X6F,	\
+	0X6D,0X6E,0X6F,0X70,0X6E,0X6F,0X70,0X71,	\
+	0X6E,0X6F,0X70,0X71,0X6E,0X6F,0X70,0X71
+};
+
+unsigned char code DIGEST_SHA1_3[] = 
+{
+	0XA9,0X99,0X3E,0X36,0X47,0X06,0X81,0X6A,0XBA,0X3E,0X25,0X71,0X78,0X50,0XC2,0X6C,
+	0X9C,0XD0,0XD8,0X9D
+};
+
+unsigned char code DIGEST_SHA1_55[] = 
+{
+	0X47,0XB1,0X72,0X81,0X07,0X95,0X69,0X9F,0XE7,0X39,0X19,0X7D,0X1A,0X1F,0X59,0X60,
+    0X70,0X02,0X42,0XF1
+};
+
+unsigned char code DIGEST_SHA1_56[] = 
+{
+	0X84,0X98,0X3E,0X44,0X1C,0X3B,0XD2,0X6E,0XBA,0XAE,0X4A,0XA1,0XF9,0X51,0X29,0XE5,
+	0XE5,0X46,0X70,0XF1
+};
+
+unsigned char code DIGEST_SHA1_63[] = 
+{
+	0X86,0X9D,0XF9,0XC5,0XEB,0XCE,0XF2,0XFF,0X5B,0XAC,0X4A,0X8F,0X58,0X53,0X42,0XC8,
+    0XD1,0X3C,0X7B,0XC8
+};
+
+unsigned char code DIGEST_SHA1_64[] = 
+{
+	0X84,0XA7,0XCF,0X23,0XA0,0X5B,0X94,0X85,0XD4,0X47,0X0C,0X01,0X93,0X00,0XEB,0X9B,
+	0X82,0X7F,0X62,0X79
+};
+
+unsigned char code DIGEST_SHA1_128[] = 
+{
+	0XA5,0X1C,0X64,0X93,0X9D,0X88,0X69,0X7D,0XE0,0XFF,0XC4,0X8E,0X94,0XC9,0XED,0X2A,
+	0X24,0XA8,0X16,0X85
+};
+
+unsigned char code DIGEST_SHA1_184[] = 
+{
+	0XF6,0XCC,0X70,0X5E,0X37,0X75,0XE2,0X28,0X3C,0XE6,0X8F,0XF7,0XD1,0XC3,0X4F,0XB3,
+	0XDB,0X14,0X1E,0X41
+};
+
+unsigned char code DIGEST_SHA256_3[] = 
+{
+	0XBA,0X78,0X16,0XBF,0X8F,0X01,0XCF,0XEA,0X41,0X41,0X40,0XDE,0X5D,0XAE,0X22,0X23,
+	0XB0,0X03,0X61,0XA3,0X96,0X17,0X7A,0X9C,0XB4,0X10,0XFF,0X61,0XF2,0X00,0X15,0XAD
+};
+
+unsigned char code DIGEST_SHA256_55[] = 
+{
+	0XAA,0X35,0X3E,0X00,0X9E,0XDB,0XAE,0XBF,0XC6,0XE4,0X94,0XC8,0XD8,0X47,0X69,0X68,
+    0X96,0XCB,0X8B,0X39,0X8E,0X01,0X73,0XA4,0XB5,0XC1,0XB6,0X36,0X29,0X2D,0X87,0XC7
+};
+
+unsigned char code DIGEST_SHA256_56[] = 
+{
+	0X24,0X8D,0X6A,0X61,0XD2,0X06,0X38,0XB8,0XE5,0XC0,0X26,0X93,0X0C,0X3E,0X60,0X39,
+	0XA3,0X3C,0XE4,0X59,0X64,0XFF,0X21,0X67,0XF6,0XEC,0XED,0XD4,0X19,0XDB,0X06,0XC1
+};
+
+unsigned char code DIGEST_SHA256_63[] = 
+{
+    0X5E,0X59,0XD4,0XE4,0XA8,0X2B,0X27,0X13,0XC0,0X08,0XC1,0XBF,0XAA,0X7A,0X3B,0X21,
+    0XA3,0XEC,0XE5,0XDF,0X5B,0X2A,0X57,0X02,0X73,0X94,0XDB,0XB2,0X49,0XCC,0XF6,0X81
+};
+
+unsigned char code DIGEST_SHA256_64[] = 
+{
+	0X9A,0XA1,0X40,0X49,0X29,0X53,0X90,0XEE,0X20,0XDF,0X14,0X13,0XCC,0X7F,0X7D,0X07,
+	0XA0,0XF6,0XFA,0X36,0X9D,0X07,0XB9,0X38,0X82,0XF1,0X97,0X9B,0XA5,0XE9,0X42,0XDE
+};
+
+unsigned char code DIGEST_SHA256_128[] = 
+{
+	0XDA,0X77,0XE7,0XEB,0X40,0XB7,0XB8,0X94,0X88,0X84,0XA7,0X1B,0X43,0XA8,0X6C,0X1B,
+	0X1C,0XCD,0XF5,0X1C,0X25,0X5E,0X8C,0X83,0XC8,0X08,0XF1,0XE0,0X06,0X0A,0XCB,0X83
+};
+
+unsigned char code DIGEST_SHA256_184[] = 
+{
+	0XC5,0XB8,0X88,0X71,0X88,0X64,0X3D,0X00,0X1E,0XF0,0X80,0X5B,0X1B,0X64,0XEF,0XA7,
+	0X4A,0XDF,0X8A,0XDC,0XA8,0X6C,0X85,0XB9,0X9B,0X1A,0X68,0X5D,0X50,0XD7,0XAA,0XB5
+};
+
+
+char SHA1_TEST()
+{
+	unsigned char xdata ret;
+	memcpy(space_for_test, SHA_VECTOR, 64);
+
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	ret = SHA1Final(space_for_test, 3, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_3, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	ret = SHA1Final(space_for_test, 55, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_55, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	ret = SHA1Final(space_for_test, 56, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_56, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+    
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	ret = SHA1Final(space_for_test, 63, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_63, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	SHA1Update(space_for_test);
+
+	ret = SHA1Final(space_for_test, 0, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_64, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	SHA1Update(space_for_test);
+
+	SHA1Update(space_for_test);
+
+	ret = SHA1Final(space_for_test, 0, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_128, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA1Init();
+
+	SHA1Update(space_for_test);
+
+	SHA1Update(space_for_test);
+
+	ret = SHA1Final(space_for_test, 56, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA1_184, 20);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	return 0;
+
+ErrorExit:
+	return 1;
+}
+
+char SHA256_TEST()
+{
+	unsigned char xdata ret;
+	memcpy(space_for_test, SHA_VECTOR, 64);
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	ret = SHA256Final(space_for_test, 3, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_3, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	ret = SHA256Final(space_for_test, 55, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_55, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	ret = SHA256Final(space_for_test, 56, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_56, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	ret = SHA256Final(space_for_test, 63, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_63, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	SHA256Update(space_for_test);
+
+	ret = SHA256Final(space_for_test, 0, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_64, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	SHA256Update(space_for_test);
+
+	SHA256Update(space_for_test);
+
+	ret = SHA256Final(space_for_test, 0, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_128, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	SHA256Init();
+
+	SHA256Update(space_for_test);
+
+	SHA256Update(space_for_test);
+
+	ret = SHA256Final(space_for_test, 56, space_for_test+0x200);
+
+	if (SUCCESS != ret)
+	{
+		goto ErrorExit;
+	}
+
+	ret = memcmp(space_for_test+0x200, DIGEST_SHA256_184, 32);
+
+	if (0 != ret)
+	{
+		goto ErrorExit;
+	}
+
+	return 0;
+
+ErrorExit:
+	return 1;
+}
+
+// unsigned char SHA1_WHOLE_TEST()
+// {
+//     int i;
+//     unsigned char ret;
+//     unsigned char xdata dst[32];
+
+//     unsigned char code whole_test[] = 
+//     {
+//         0X86,0XF7,0XE4,0X37,0XFA,0XA5,0XA7,0XFC,0XE1,0X5D,0X1D,0XDC,0XB9,0XEA,0XEA,0XEA,0X37,0X76,0X67,0XB8,
+//         0XDA,0X23,0X61,0X4E,0X02,0X46,0X9A,0X0D,0X7C,0X7B,0XD1,0XBD,0XAB,0X5C,0X9C,0X47,0X4B,0X19,0X04,0XDC,
+//         0XA9,0X99,0X3E,0X36,0X47,0X06,0X81,0X6A,0XBA,0X3E,0X25,0X71,0X78,0X50,0XC2,0X6C,0X9C,0XD0,0XD8,0X9D,
+//         0X81,0XFE,0X8B,0XFE,0X87,0X57,0X6C,0X3E,0XCB,0X22,0X42,0X6F,0X8E,0X57,0X84,0X73,0X82,0X91,0X7A,0XCF,
+//         0XD9,0XAC,0XE2,0XAC,0X54,0X48,0XD3,0XA3,0X8C,0X84,0X48,0XD7,0XE5,0XC5,0X6E,0X56,0X6A,0X97,0XB6,0X67,
+//         0XE7,0XF3,0XD0,0XAF,0X71,0XDA,0X8B,0X98,0XC3,0X3F,0X8B,0X1E,0X66,0X44,0X72,0XAF,0X5A,0X8E,0X39,0X20,
+//         0X7F,0XA0,0X39,0X13,0XA2,0XD1,0XE0,0XC6,0X8F,0X96,0X95,0XCF,0XEA,0X1D,0X16,0X3C,0X25,0X6D,0X77,0X27,
+//         0X5D,0XB4,0XBC,0X5D,0X92,0XFF,0X0D,0XCD,0X02,0XE9,0XB3,0X28,0X61,0X98,0XE8,0X1C,0X30,0XDB,0X9C,0X0E,
+//         0X1E,0XD3,0XE0,0X75,0XD5,0X0D,0XDC,0X81,0XDA,0X92,0XE0,0XFE,0XE6,0X6F,0X24,0X32,0X31,0X77,0X6B,0XFD,
+//         0X29,0X22,0X09,0X4E,0X04,0X76,0X0B,0X68,0X4D,0X76,0XC4,0XC8,0XCC,0XA4,0X57,0X42,0XBB,0X0F,0XB4,0XF5,
+//         0XC8,0X43,0X87,0X80,0X2F,0XA7,0XC3,0X23,0X4B,0X09,0X50,0X6C,0XB3,0X96,0X8F,0XAF,0X2D,0X8A,0XE1,0X81,
+//         0X08,0X60,0X22,0X9B,0XAD,0XBC,0X9F,0X54,0XBF,0X23,0X3F,0X86,0XE8,0X22,0XAF,0X67,0XDC,0XC0,0X94,0XED,
+//         0XFA,0XAD,0X1F,0X2A,0XC8,0X9E,0X99,0X4F,0X50,0X63,0XF7,0X56,0X44,0XE0,0X82,0X2A,0XB1,0XF8,0X13,0XF4,
+//         0XD2,0X68,0X78,0XAC,0XD7,0X10,0X98,0XEA,0X71,0X1C,0XA4,0XDE,0X8C,0XBE,0X1F,0X6C,0X8B,0XFA,0X98,0XEA,
+//         0XA0,0X98,0XC2,0XEB,0X19,0X71,0X24,0X54,0X79,0XBB,0X9D,0X27,0XEA,0XA7,0X07,0X74,0XD1,0X7A,0X99,0XB4,
+//         0XE8,0XB7,0X1F,0X76,0X6F,0X64,0X56,0X56,0X48,0X8A,0X4B,0XA0,0X8B,0X9E,0X71,0XDE,0X3D,0XAB,0X5E,0X23,
+//         0X6D,0X81,0X96,0X45,0X81,0X21,0XDF,0XE9,0X3F,0X69,0XDD,0X92,0XB5,0X27,0X9A,0X44,0X85,0X6D,0XEB,0XBA,
+//         0XB8,0X3D,0X6B,0X94,0X3A,0XE2,0XBD,0XB0,0XEB,0X43,0X27,0XF1,0XC2,0X69,0XB9,0XEE,0X2F,0XE3,0X55,0XD6,
+//         0X9C,0X82,0X50,0X70,0XA1,0XD0,0X65,0XE9,0X9F,0XE1,0XDB,0XAC,0X35,0XA2,0X63,0XF3,0X93,0X9F,0X9D,0X06,
+//         0X33,0X48,0XEF,0X41,0X48,0X44,0XCC,0X2B,0XFB,0X2E,0X21,0XB7,0XD6,0X97,0XEC,0X4D,0X1B,0X28,0X47,0X5E,
+//         0X22,0X43,0X5B,0XEA,0X19,0XAE,0XE5,0X55,0X51,0XA2,0XEA,0XAF,0XA3,0X38,0X8F,0X7B,0X96,0X7F,0X0B,0XFC,
+//         0X78,0X58,0XFF,0XC4,0XD9,0X81,0XA1,0XDD,0XD8,0XDD,0XA8,0X30,0X58,0X4E,0XC0,0XE7,0X31,0XE1,0X4A,0XB7,
+//         0XE6,0X2F,0X60,0X92,0XA6,0XFC,0X7C,0X9C,0X2E,0X15,0XF3,0X43,0X58,0XDB,0XF2,0XF9,0XF4,0X62,0X38,0XDA,
+//         0XD8,0X11,0X59,0X87,0XB5,0X46,0X36,0XA9,0XAD,0X63,0XBB,0X7E,0X9F,0XB4,0XF4,0X5D,0X6E,0X1F,0X3F,0XA6,
+//         0X4F,0X9D,0X08,0XBF,0X2E,0X6C,0X3D,0X11,0X97,0XE3,0X33,0X32,0X8D,0X72,0XD4,0X0E,0XA8,0X29,0X5D,0X20,
+//         0X91,0X4C,0X66,0X57,0X25,0X18,0XC1,0XE0,0XAA,0X16,0XB0,0XB3,0XA6,0X45,0X28,0XC3,0X32,0XE1,0XD9,0X6F,
+//         0XF3,0XDE,0X32,0XDE,0XD1,0X21,0X43,0XA4,0XB2,0XE1,0X19,0XA6,0X32,0XD4,0X6E,0X2C,0XA1,0XE5,0XAA,0X20,
+//         0X11,0XC5,0X8F,0X32,0XDE,0X1C,0XF0,0X5E,0X18,0XCA,0XB7,0X1D,0X02,0X05,0XD7,0X6E,0XCE,0XB7,0X5D,0X6D,
+//         0XE7,0X70,0X87,0X5E,0XD6,0X3B,0X2F,0X03,0X7E,0X7F,0X76,0X66,0XCE,0X57,0XB3,0X60,0XB5,0XFF,0X10,0X8A,
+//         0XF9,0X53,0X7C,0X23,0X89,0X3D,0X20,0X14,0XF3,0X65,0XAD,0XF8,0XFF,0XE3,0X3B,0X8E,0XB0,0X29,0X7E,0XD1,
+//         0XC6,0X01,0X1C,0X3A,0X67,0XA3,0X45,0XF8,0XDA,0X26,0XB5,0X66,0X7A,0X91,0X5B,0X47,0X18,0X81,0X29,0X06,
+//         0X37,0XBC,0X52,0X21,0XAD,0XE3,0XBC,0X09,0XCA,0XD1,0X5E,0X47,0X84,0XF3,0XC7,0X05,0X14,0X54,0XB1,0XB3,
+//         0XB5,0X13,0X4B,0X2A,0XC0,0X13,0X78,0X79,0X3B,0X72,0XD2,0X8D,0X6E,0XED,0X1A,0X45,0X87,0XBB,0X1A,0X83,
+//         0XA3,0X5A,0X77,0XD3,0X38,0X14,0XC5,0X0B,0X7C,0X0E,0X10,0X5F,0XDE,0X55,0X08,0XC1,0X6C,0X4E,0X49,0X3E,
+//         0X6D,0XFD,0X04,0X41,0X8D,0X54,0XF0,0X57,0X1F,0X0A,0X84,0XEB,0X93,0XC0,0XE8,0XF2,0X5A,0X31,0X8C,0X41,
+//         0X5E,0XAE,0XC9,0X16,0X53,0X3C,0XD2,0X2C,0X8E,0XE5,0X5F,0X0A,0X66,0XF3,0XA7,0X4C,0X5D,0X48,0X41,0X3F,
+//         0XC7,0X56,0X2D,0X3F,0XC3,0X01,0X62,0X7D,0XCD,0X60,0XF1,0X6D,0X66,0X5C,0X55,0X90,0X0F,0X8F,0XE7,0XBD,
+//         0X71,0XD9,0X30,0X0C,0X42,0XAE,0X93,0X5E,0XC7,0X50,0XDD,0X9F,0X47,0X7E,0X5E,0XFE,0X7B,0XCE,0X16,0X91,
+//         0XB5,0XED,0X28,0X1B,0XCB,0X62,0X42,0XB2,0X88,0X9E,0XB9,0XA9,0XC1,0X72,0X7F,0X3E,0X9A,0XB6,0XDA,0XC4,
+//         0XF3,0XAB,0X11,0XDE,0XAC,0X39,0XB7,0X34,0XD8,0XF0,0X7B,0X0B,0XE0,0XEB,0X76,0XE9,0X9A,0X4D,0X57,0XDB,
+//         0XC3,0X03,0X85,0X9E,0XD7,0XE9,0X8A,0X6C,0X11,0XD7,0XB3,0XC9,0X07,0X89,0X08,0XEB,0X37,0X46,0XE6,0X33,
+//         0X09,0X2F,0X5C,0X4C,0XCE,0XD5,0X3F,0X97,0XF2,0X07,0X0E,0X56,0X84,0X2E,0XFA,0X99,0XE7,0XE1,0X51,0XB0,
+//         0X76,0XD2,0X77,0X9B,0X7E,0X98,0X6C,0X9A,0X4D,0X2C,0X96,0X09,0X9C,0X8B,0XAA,0X92,0X0C,0XC4,0X5D,0XCF,
+//         0XF0,0X9B,0X96,0XFE,0X41,0XAB,0X0B,0X70,0X06,0XBE,0X4C,0X82,0XF4,0X81,0X65,0XF3,0X69,0XEB,0XC9,0XD1,
+//         0X97,0X0D,0X78,0XDB,0XC3,0XDF,0X1C,0XE2,0X4B,0XFC,0XD5,0XD6,0X44,0X9F,0X87,0XAE,0X73,0XD0,0X89,0X21,
+//         0X79,0X80,0X7F,0X3E,0X92,0X96,0X12,0X55,0X24,0X2A,0X1A,0XAB,0X95,0X95,0X8D,0X74,0XF7,0XB7,0X2E,0XB8,
+//         0X59,0X10,0X6F,0X40,0X34,0XD5,0XB0,0X64,0X6C,0X32,0XEF,0X8B,0XAE,0X4C,0X4E,0X9D,0XF2,0X84,0X33,0X96,
+//         0X94,0XBF,0X9B,0X67,0XDB,0XF6,0X2C,0X6A,0XC1,0XDF,0X76,0X28,0X65,0X22,0X37,0X35,0X79,0X6E,0XED,0XE3,
+//         0X9D,0X47,0X79,0X19,0X75,0XC5,0X30,0X64,0X5A,0XD3,0X56,0X8E,0X80,0XF8,0X8D,0X7D,0XA4,0XC5,0X2C,0X3B,
+//         0X6A,0X90,0XAC,0XED,0XAE,0X58,0XB0,0XA9,0XE1,0X04,0X57,0X6E,0X33,0XFC,0XC8,0X4A,0XF1,0X6D,0X75,0X85,
+//         0X22,0XAA,0XC8,0X5C,0XAE,0XAA,0X2F,0X46,0X10,0XB1,0XAC,0X06,0X6A,0X9E,0XB7,0X1B,0X47,0XD4,0X84,0XF5,
+//         0XB4,0X49,0X2B,0X5A,0XA7,0X6C,0X2D,0X7C,0XFD,0X6D,0XEF,0X8E,0X00,0XC4,0XA0,0XB2,0X87,0X91,0X57,0XCA,
+//         0X59,0XFE,0X96,0X2D,0XF2,0X5E,0X86,0XFF,0X14,0X8E,0X41,0X65,0XB2,0XA4,0X4B,0X2F,0XAE,0X01,0XD4,0XFB,
+//         0XDA,0XCB,0XE8,0X4F,0X79,0X57,0XB0,0X12,0X1F,0X03,0X63,0XA0,0X08,0X7A,0X68,0XBC,0X21,0X2E,0X34,0X22,
+//         0X47,0XB1,0X72,0X81,0X07,0X95,0X69,0X9F,0XE7,0X39,0X19,0X7D,0X1A,0X1F,0X59,0X60,0X70,0X02,0X42,0XF1,
+//         0X84,0X98,0X3E,0X44,0X1C,0X3B,0XD2,0X6E,0XBA,0XAE,0X4A,0XA1,0XF9,0X51,0X29,0XE5,0XE5,0X46,0X70,0XF1,
+//         0XE4,0XC6,0X95,0X01,0X65,0XEE,0X0F,0XF1,0X70,0XB7,0X23,0X13,0XD5,0X65,0X82,0XDF,0X00,0X02,0X18,0X12,
+//         0X60,0X2C,0XBF,0X96,0XD7,0X99,0XC5,0X49,0X9A,0X65,0X5D,0X24,0X4D,0X5D,0X9E,0XD9,0X07,0XA1,0X99,0X72,
+//         0XEB,0X2D,0XEF,0XAA,0X69,0X7E,0X8A,0XB8,0X2B,0X56,0XF0,0XF9,0X91,0X91,0X4F,0X24,0X8A,0X5E,0X1F,0XF9,
+//         0X53,0X10,0XCE,0X3F,0XA8,0X49,0X38,0XD5,0X6F,0X64,0X07,0X1D,0XCC,0X71,0X73,0X99,0X81,0X11,0X5F,0XB2,
+//         0X72,0XFC,0XBA,0XEC,0X24,0XBA,0X35,0XAA,0X89,0XFD,0XFB,0X36,0XB3,0X69,0XF7,0X90,0X0C,0X2B,0X39,0X88,
+//         0XA1,0X42,0X9C,0X76,0X20,0XD9,0X4A,0X93,0X10,0XE2,0XAC,0X27,0X8B,0X1D,0X34,0XB3,0XA9,0X1C,0X7C,0X77,
+//         0X86,0X9D,0XF9,0XC5,0XEB,0XCE,0XF2,0XFF,0X5B,0XAC,0X4A,0X8F,0X58,0X53,0X42,0XC8,0XD1,0X3C,0X7B,0XC8,
+//         0X84,0XA7,0XCF,0X23,0XA0,0X5B,0X94,0X85,0XD4,0X47,0X0C,0X01,0X93,0X00,0XEB,0X9B,0X82,0X7F,0X62,0X79
+//     };
+//     
+//     memcpy(space_for_test, SHA_VECTOR, 64);
+//     
+//     for (i = 1; i <= 63; i++)
+//     {
+//         SHA1Init();
+//         SHA1Final(space_for_test, i, dst);
+//         
+//         ret = memcmp(dst, whole_test+20*(i-1), 20);
+//         if (0 != ret)
+//         {
+//             return 1;
+//         }
+//     }
+//     SHA1Init();
+//     SHA1Update(space_for_test);
+//     SHA1Final(space_for_test, 0, dst);
+//     ret = memcmp(dst, whole_test+20*(i-1), 20);
+//     if (0 != ret)
+//     {
+//         return 1;
+//     }
+
+//     return 0;        
+// }
+

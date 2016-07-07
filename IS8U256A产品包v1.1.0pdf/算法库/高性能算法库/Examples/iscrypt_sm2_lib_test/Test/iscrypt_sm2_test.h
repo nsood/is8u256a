@@ -1,0 +1,14 @@
+#ifndef __IS8U_SM2_TEST_H__
+#define __IS8U_SM2_TEST_H__
+
+char GENERATE_KEY_TEST();
+
+char SM2_ENCRYPT_DECRYPT_TEST();
+
+char SM2_SIGN_VERIFY_TEST();
+
+char SM2_KEY_EXCHANGE_TEST();
+
+char SM2_KEY_GET_Z_TEST();
+
+#endif
