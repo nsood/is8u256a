@@ -37,32 +37,37 @@
 #define RSA_KEY_dQ	6
 #define RSA_KEY_qInv	7
 
-FILE *fp;
-char key_name[][20]={	
-	"modulus:",
-        "publicExponent:",
-        "privateExponent:",
-        "prime1:",
-        "prime2:",
-        "exponent1:",
-        "exponent2:",
-        "coefficient:"
-    };
-int file_length;
-int key_name_len[KEY_TYPES] = {0};
-int key_off[KEY_TYPES] = {0};
-int key_name_off[KEY_TYPES+1] = {0};
+struct RSA2048_key {
+	unsigned char *RSA2048_E;
+	unsigned char *RSA2048_N;
+	unsigned char *RSA2048_D;
+	unsigned char *RSA2048_P;
+	unsigned char *RSA2048_Q;
+	unsigned char *RSA2048_dP;
+	unsigned char *RSA2048_dQ;
+	unsigned char *RSA2048_qInv;
+};
+int str_to_int(char *str)
+{
+	int value  = 0;
+	int sign   = 1;
+	int result = 0;
+	if(NULL == str) {
+		return -1;
+	}
+ 	if('-' == *str) {
+		sign = -1;
+		str++;
+	}
+	while(*str) {
+		value = value * 10 + *str - '0';
+		str++;
+	}
+	result = sign * value;
+	return result;
+}
 
-unsigned char RSA2048_E[4] = {0};
-unsigned char RSA2048_N[256] = {0};
-unsigned char RSA2048_D[256] = {0};
-unsigned char RSA2048_P[128] = {0};
-unsigned char RSA2048_Q[128] = {0};
-unsigned char RSA2048_dP[128] = {0};
-unsigned char RSA2048_dQ[128] = {0};
-unsigned char RSA2048_qInv[128] = {0};
-
-void get_key_length()
+void get_key_length(int file_length, int *key_name_len, int *key_name_off, char **key_name)
 {
 	int i;
 	for(i=0; i<KEY_TYPES; i++) {
@@ -72,7 +77,7 @@ void get_key_length()
 	key_name_off[i] = file_length;
 }
 
-void get_key_offset()
+void get_key_offset(FILE *fp, int file_length, char **key_name, int *key_name_len, int *key_name_off, int *key_off)
 {
 	char c;
 	int off = 0;
@@ -101,7 +106,7 @@ void get_key_offset()
 	}
 }
 
-void get_key_all()
+void get_key_all(FILE *fp, int *key_off, int *key_name_off)
 {
 	int i,j;
 	char c;
@@ -118,7 +123,7 @@ void get_key_all()
 	}
 }
 
-int get_key(int key_off,int next_key_name_off,int key_len,unsigned char *key)
+int get_key(FILE *fp, int key_off,int next_key_name_off,int key_len,unsigned char *key)
 {
 	int i,i_key;
 	int flag=0; //means high byte or low byte
@@ -165,18 +170,22 @@ int get_key(int key_off,int next_key_name_off,int key_len,unsigned char *key)
 		return FAILED;
 }
 
-int get_RSA2048_E()
+int get_RSA2048_E(FILE *fp, int *key_off, unsigned char *RSA2048_E)
 {
 	int i;
 	char c;
 	char tmp_s[20];
 	unsigned char E[4] = {0x00,0x01,0x00,0x01};
 	
-	fseek(fp,key_off[RSA_KEY_E]+1,SEEK_SET);
+	fseek(fp,key_off[RSA_KEY_E]+1,SEEK_SET);//+1 means skip a space character
 	fgets(tmp_s,6,fp);
 	debug("%s\n",tmp_s);
 	if(!strcmp(tmp_s,"65537"))
 		memcpy(RSA2048_E, E, 4);
+	else  {
+		i = str_to_int(tmp_s);
+		
+	}
 #ifdef DEBUG
 	for(i=0;i<4;i++)
 		debug("%02x ",RSA2048_E[i]);
@@ -186,65 +195,116 @@ int get_RSA2048_E()
 	return SUCCESS;
 }
 
-int get_RSA2048_N()
+int get_RSA2048_N(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_N)
 {
-	return get_key(key_off[RSA_KEY_N]+5,key_name_off[RSA_KEY_E],256,RSA2048_N);//+6 deal first 0x0A 0x20 unused bytes
+	return get_key(fp, key_off[RSA_KEY_N]+5,key_name_off[RSA_KEY_E],256,RSA2048_N);//+6 deal first 0x0A 0x20 unused bytes
 }
-int get_RSA2048_D()
+int get_RSA2048_D(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_D)
 {
-	return get_key(key_off[RSA_KEY_D]+5,key_name_off[RSA_KEY_P],256,RSA2048_D);//+6 deal first 0x0A 0x20 unused bytes
+	return get_key(fp, key_off[RSA_KEY_D]+5,key_name_off[RSA_KEY_P],256,RSA2048_D);//+6 deal first 0x0A 0x20 unused bytes
 }
-int get_RSA2048_P()
+int get_RSA2048_P(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_P)
 {
-	return get_key(key_off[RSA_KEY_P]+5,key_name_off[RSA_KEY_Q],128,RSA2048_P);//+6 deal first 0x0A 0x20 unused bytes
+	return get_key(fp, key_off[RSA_KEY_P]+5,key_name_off[RSA_KEY_Q],128,RSA2048_P);//+6 deal first 0x0A 0x20 unused bytes
 }
-int get_RSA2048_Q()
+int get_RSA2048_Q(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_Q)
 {
-	return get_key(key_off[RSA_KEY_Q]+5,key_name_off[RSA_KEY_dP],128,RSA2048_Q);//+6 deal first 0x0A 0x20 unused bytes
+	return get_key(fp, key_off[RSA_KEY_Q]+5,key_name_off[RSA_KEY_dP],128,RSA2048_Q);//+6 deal first 0x0A 0x20 unused bytes
 }
-int get_RSA2048_dP()
+int get_RSA2048_dP(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_dP)
 {
-	return get_key(key_off[RSA_KEY_dP]+5,key_name_off[RSA_KEY_dQ],128,RSA2048_dP);//+6 deal first 0x0A 0x20 unused bytes
+	return get_key(fp, key_off[RSA_KEY_dP]+5,key_name_off[RSA_KEY_dQ],128,RSA2048_dP);//+6 deal first 0x0A 0x20 unused bytes
 }
-int get_RSA2048_dQ()
+int get_RSA2048_dQ(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_dQ)
 {
-	return get_key(key_off[RSA_KEY_dQ]+5,key_name_off[RSA_KEY_qInv],128,RSA2048_dQ);//+6 deal first 0x0A 0x20 unused bytes
+	return get_key(fp, key_off[RSA_KEY_dQ]+5,key_name_off[RSA_KEY_qInv],128,RSA2048_dQ);//+6 deal first 0x0A 0x20 unused bytes
 }
-int get_RSA2048_qInv()
+int get_RSA2048_qInv(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_qInv)
 {
-	return get_key(key_off[RSA_KEY_qInv]+5,key_name_off[8],128,RSA2048_qInv);
+	return get_key(fp, key_off[RSA_KEY_qInv]+5,key_name_off[8],128,RSA2048_qInv);
 }
 
-int main(int argc, char **argv)
+int export_RSA2048_key(struct RSA2048_key *key_t)
 {
 	int ret=0;
-
+	int i;
+	char c;
+	int key_name_get = 0;
+	char key_name_tmp[20]={0};
+	
+	FILE *fp=NULL;
+	char key_name[][20]={	
+		"modulus:",
+	        "publicExponent:",
+	        "privateExponent:",
+	        "prime1:",
+	        "prime2:",
+	        "exponent1:",
+	        "exponent2:",
+	        "coefficient:"
+	    };
+	int file_length;
+	int key_name_len[KEY_TYPES] = {0};
+	int key_off[KEY_TYPES] = {0};
+	int key_name_off[KEY_TYPES+1] = {0};
+	
 	system("openssl rsa -in id_rsa -noout -text > id_rsa.txt");
-	if((fp = fopen(FILENAME, "rb")) == 0) {
-		    printf("Can't open %s, program will to exit.", FILENAME);
-	exit(1);
+	fp = fopen(FILENAME, "r");
+	if(fp == NULL) {
+		printf("Can't open %s, program will to exit.", FILENAME);
+		exit(1);
 	}
 	ret = fseek(fp,0,SEEK_END);
 	file_length = ftell(fp);
 	debug("file length is %d\n",file_length);
     
-	get_key_length();
-	get_key_offset();
+	//get_key_name_len()
+	for(i=0; i<KEY_TYPES; i++) {
+		key_name_len[i] = strlen(key_name[i]);
+		debug("%s length : %d\n",key_name[i],key_name_len[i]);
+	}
+	key_name_off[i] = file_length;
+
+	//get_key_name_off()
+	rewind(fp);
+	i = 0;
+	while(i++ < file_length) {
+		c = fgetc(fp);
+		//debug("%c",c);
+		if( c == key_name[key_name_get][0] ) {
+            	//debug("\nget key_name[%d] :%c\n",key_name_get,c);
+			fseek(fp,-1,SEEK_CUR);
+			fgets(key_name_tmp,key_name_len[key_name_get]+1,fp);
+			if(!strcmp(key_name_tmp,key_name[key_name_get])){
+				debug("%s\n",key_name_tmp);
+				fseek(fp,-key_name_len[key_name_get],SEEK_CUR);
+				key_name_off[key_name_get] = ftell(fp);
+				fseek(fp,key_name_len[key_name_get],SEEK_CUR);
+				key_off[key_name_get] = ftell(fp);
+				 debug("%s name offset : %d\tkey offset : %d\n",key_name[key_name_get],key_name_off[key_name_get],key_off[key_name_get]);
+				key_name_get++;
+			}
+			memset(key_name_tmp,0,20);
+		}   
+	}
+	
 #ifdef DEBUG
-	get_key_all();
+	get_key_all(fp, key_off, key_name_off);
 #endif
-	ret += get_RSA2048_N();
-	ret += get_RSA2048_D();
-	ret += get_RSA2048_P();
-	ret += get_RSA2048_Q();
-	ret += get_RSA2048_dP();
-	ret += get_RSA2048_dQ();
-	ret += get_RSA2048_qInv();
+	ret += get_RSA2048_E(fp, key_off, key_t->RSA2048_E);
+	ret += get_RSA2048_N(fp, key_off, key_name_off, key_t->RSA2048_N);
+	ret += get_RSA2048_D(fp, key_off, key_name_off, key_t->RSA2048_D);
+	ret += get_RSA2048_P(fp, key_off, key_name_off, key_t->RSA2048_P);
+	ret += get_RSA2048_Q(fp, key_off, key_name_off, key_t->RSA2048_Q);
+	ret += get_RSA2048_dP(fp, key_off, key_name_off, key_t->RSA2048_dP);
+	ret += get_RSA2048_dQ(fp, key_off, key_name_off, key_t->RSA2048_dQ);
+	ret += get_RSA2048_qInv(fp, key_off, key_name_off, key_t->RSA2048_qInv);
     
 	if(ret!=SUCCESS)
 	    printf("Some action failed !\n");
-    
+
 	fclose(fp);
+	fp = NULL;
 	return 0;
 }
 
