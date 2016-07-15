@@ -1,9 +1,9 @@
 #Acorn Common Utils for is8u256a rw
 
 default:
-	$(CC) -o is8u256a is8u256a.c key_prase.c key_prase.h
+	$(CC) -o test_is8u256a test_is8u256a.c is8u256a.c key_prase.c is8u256a.h key_prase.h
 
 clean:
-	rm -rf is8u256a key_prase
+	rm -rf test_is8u256a
 
 .PHONY: default clean

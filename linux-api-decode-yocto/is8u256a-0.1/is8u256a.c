@@ -4,11 +4,10 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <string.h>
-
+/*
 #include "key_prase.h"
-
 #define DEVICE	"/dev/spidev1.1"
-
+*/
 #define DEBUG
 
 #ifdef DEBUG
@@ -19,6 +18,18 @@
 	do { } while (0)
 #endif
 
+/*
+struct RSA2048_key {
+	unsigned char *RSA2048_E;
+	unsigned char *RSA2048_N;
+	unsigned char *RSA2048_D;
+	unsigned char *RSA2048_P;
+	unsigned char *RSA2048_Q;
+	unsigned char *RSA2048_dP;
+	unsigned char *RSA2048_dQ;
+	unsigned char *RSA2048_qInv;
+};
+*/
 #define SUCCESS	0
 #define FAILED	1
 
@@ -37,20 +48,10 @@ struct transfer_s{
 	unsigned char *send_buf;
 };
 
-struct RSA2048_key {
-	unsigned char *RSA2048_E;
-	unsigned char *RSA2048_N;
-	unsigned char *RSA2048_D;
-	unsigned char *RSA2048_P;
-	unsigned char *RSA2048_Q;
-	unsigned char *RSA2048_dP;
-	unsigned char *RSA2048_dQ;
-	unsigned char *RSA2048_qInv;
-};
-
 unsigned char buffer_in[1024];
 unsigned char buffer_out[1024];
 
+/*
 unsigned char RSA2048_E[4] = {0};
 unsigned char RSA2048_N[256] = {0};
 unsigned char RSA2048_D[256] = {0};
@@ -99,7 +100,7 @@ unsigned char RSA2048_CipherText[256] =
 	0x1c,0x6c,0x8d,0xf0,0x6a,0x6f,0x83,0xd2,0x9e,0xd9,0x7a,0xcc,0xfa,0x2a,0x51,0xd3,
 	0x12,0x7d,0xa7,0x19,0x9d,0xb0,0x85,0xae,0xc2,0x1b,0x2c,0xf1,0x68,0xcf,0xdd,0x16
 };
-
+*/
 void str_to_hex(unsigned char* dest, unsigned char* src, int len)
 {
 	unsigned char h1,h2,s1,s2;
@@ -522,7 +523,7 @@ int RSA2048_generate_key_CRT(int fd)
 	return SUCCESS;		
 }
 
-
+/*
 int main(int argc, char **argv)
 {
 	int ret=0;
@@ -591,5 +592,5 @@ int main(int argc, char **argv)
 	return SUCCESS;
 }
 
-
+*/
 
