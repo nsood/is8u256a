@@ -16,7 +16,11 @@ int RSA2048_load_prikey_qInv(int fd,unsigned char* RSA2048_qInv);
 int RSA2048_Encrypt(int fd);
 int RSA2048_Decrypt_STD(int fd);
 int RSA2048_Decrypt_CRT(int fd);
+int RSA2048_Sign_STD(int fd);
+int RSA2048_Sign_CRT(int fd);
+int RSA2048_Verify(int fd);
 int RSA2048_load_text(int fd,unsigned char* text);
+int RSA2048_load_signature(int fd,unsigned char* text);
 int RSA2048_export_result(int fd,unsigned char*dest);
 
 #endif

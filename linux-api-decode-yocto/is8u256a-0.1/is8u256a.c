@@ -437,7 +437,9 @@ int RSA2048_load_prikey_qInv(int fd,unsigned char* RSA2048_qInv)
 }
 
 int RSA2048_Encrypt(int fd)
-{	
+{
+	// 1.lRSA2048_load_text( plain text )
+	// 2.RSA2048_Encrypt
 	int ret;
 	ret = RSA2048_execute(fd,"BF11C00000");
 	if (ret != SUCCESS) {
@@ -447,7 +449,9 @@ int RSA2048_Encrypt(int fd)
 }
 
 int RSA2048_Decrypt_STD(int fd)
-{	
+{
+	// 1.lRSA2048_load_text( cplher text )
+	// 2.RSA2048_Decrypt_STD
 	int ret;
 	ret = RSA2048_execute(fd,"BF12C00000");
 	if (ret != SUCCESS) {
@@ -457,7 +461,9 @@ int RSA2048_Decrypt_STD(int fd)
 }
 
 int RSA2048_Decrypt_CRT(int fd)
-{	
+{
+	// 1.lRSA2048_load_text( cplher text )
+	// 2.RSA2048_Decrypt_CRT
 	int ret;
 	ret = RSA2048_execute(fd,"BF12C08000");
 	if (ret != SUCCESS) {
@@ -466,9 +472,46 @@ int RSA2048_Decrypt_CRT(int fd)
 	}
 }
 
+int RSA2048_Sign_STD(int fd)
+{
+	// 1.lRSA2048_load_text( digest )
+	// 2.RSA2048_Sign_STD
+	int ret;
+	ret = RSA2048_execute(fd,"BF13C00000");
+	if (ret != SUCCESS) {
+		debug("ERR:RSA2048_Encrypt failed!\n");
+		return FAILED;
+	}
+}
+
+int RSA2048_Sign_CRT(int fd)
+{
+	// 1.lRSA2048_load_text( digest )
+	// 2.RSA2048_Sign_CRT
+	int ret;
+	ret = RSA2048_execute(fd,"BF13C08000");
+	if (ret != SUCCESS) {
+		debug("ERR:RSA2048_Encrypt failed!\n");
+		return FAILED;
+	}
+}
+
+int RSA2048_Verify(int fd)
+{
+	// 1.lRSA2048_load_text( digest )
+	// 2.RSA2048_load_signature( signature)
+	// 3.exec RSA2048_Verify
+	int ret;
+	ret = RSA2048_execute(fd,"BF14C00000");
+	if (ret != SUCCESS) {
+		debug("ERR:RSA2048_Encrypt failed!\n");
+		return FAILED;
+	}
+}
+
 int RSA2048_load_text(int fd,unsigned char* text)
 {
-	//RSA2048_load_text : load plain text or cipher text
+	//RSA2048_load_text : load plain text or cipher text or digest text
 	int ret;
 	//load first 128 bytes key
 	ret = RSA2048_load(fd,"BF50000080", text, 128);
@@ -477,6 +520,24 @@ int RSA2048_load_text(int fd,unsigned char* text)
 		return FAILED;
 	}
 	ret = RSA2048_load(fd,"BF50008080", text+128, 128);
+	if (ret != SUCCESS) {
+		debug("ERR:RSA2048_load_text_256 failed!\n");
+		return FAILED;
+	}
+	return SUCCESS;
+}
+
+int RSA2048_load_signature(int fd,unsigned char* text)
+{
+	//RSA2048_load_signature : load signature text
+	int ret;
+	//load first 128 bytes key
+	ret = RSA2048_load(fd,"BF50010080", text, 128);
+	if (ret != SUCCESS) {
+		debug("ERR:RSA2048_load_text_128 failed!\n");
+		return FAILED;
+	}
+	ret = RSA2048_load(fd,"BF50018080", text+128, 128);
 	if (ret != SUCCESS) {
 		debug("ERR:RSA2048_load_text_256 failed!\n");
 		return FAILED;

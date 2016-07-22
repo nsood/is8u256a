@@ -24,9 +24,11 @@
 #endif
 
 #define KEY_TYPES	8
+#define PUBKEY_TYPES	2
 #define SUCCESS	0
 #define FAILED	1
 #define FILENAME	"id_rsa.txt"
+#define PUBFILE	"id_rsa.pub.txt"
 
 #define RSA_KEY_N	0
 #define RSA_KEY_E	1
@@ -106,11 +108,11 @@ void get_key_offset(FILE *fp, int file_length, char **key_name, int *key_name_le
 	}
 }
 
-void get_key_all(FILE *fp, int *key_off, int *key_name_off)
+void get_key_all(FILE *fp, int *key_off, int *key_name_off, int key_type)
 {
 	int i,j;
 	char c;
-	for(i=0; i<KEY_TYPES; i++) {
+	for(i=0; i<key_type; i++) {
 		if(i==1) continue;
 		fseek(fp,key_off[i],SEEK_SET);
 		for(j=0;j<key_name_off[i+1]-key_off[i]; j++) {
@@ -194,7 +196,6 @@ int get_RSA2048_E(FILE *fp, int *key_off, unsigned char *RSA2048_E)
 
 	return SUCCESS;
 }
-
 int get_RSA2048_N(FILE *fp, int *key_off, int *key_name_off, unsigned char *RSA2048_N)
 {
 	return get_key(fp, key_off[RSA_KEY_N]+5,key_name_off[RSA_KEY_E],256,RSA2048_N);//+6 deal first 0x0A 0x20 unused bytes
@@ -224,7 +225,7 @@ int get_RSA2048_qInv(FILE *fp, int *key_off, int *key_name_off, unsigned char *R
 	return get_key(fp, key_off[RSA_KEY_qInv]+5,key_name_off[8],128,RSA2048_qInv);
 }
 
-int export_RSA2048_key(struct RSA2048_key *key_t)
+int import_RSA2048_key(struct RSA2048_key *key_t)
 {
 	int ret=0;
 	int i;
@@ -289,7 +290,7 @@ int export_RSA2048_key(struct RSA2048_key *key_t)
 	}
 	
 #ifdef DEBUG
-	get_key_all(fp, key_off, key_name_off);
+	get_key_all(fp, key_off, key_name_off,KEY_TYPES);
 #endif
 	ret += get_RSA2048_E(fp, key_off, key_t->RSA2048_E);
 	ret += get_RSA2048_N(fp, key_off, key_name_off, key_t->RSA2048_N);
@@ -307,4 +308,76 @@ int export_RSA2048_key(struct RSA2048_key *key_t)
 	fp = NULL;
 	return 0;
 }
+
+int import_RSA2048_pubkey(struct RSA2048_key *key_t)
+{
+	int ret=0;
+	int i;
+	char c;
+	int key_name_get = 0;
+	char key_name_tmp[20]={0};
+
+	FILE *fp=NULL;
+	char key_name[][20]={
+		"Modulus:",
+	        "Exponent:"
+	    };
+	int file_length;
+	int key_name_len[PUBKEY_TYPES] = {0};
+	int key_off[PUBKEY_TYPES] = {0};
+	int key_name_off[PUBKEY_TYPES+1] = {0};
+	system("ssh-keygen  -m PKCs8 -e -f id_rsa.pub > id_rsa.pub.pem");
+	system("openssl rsa -pubin -in id_rsa.pub.pem -noout -text > id_rsa.pub.txt");
+	fp = fopen(PUBFILE, "r");
+	if(fp == NULL) {
+		printf("Can't open %s, program will to exit.", PUBFILE);
+		exit(1);
+	}
+	ret = fseek(fp,0,SEEK_END);
+	file_length = ftell(fp);
+	debug("file length is %d\n",file_length);
+	//get_key_name_len()
+	for(i=0; i<PUBKEY_TYPES; i++) {
+		key_name_len[i] = strlen(key_name[i]);
+		debug("%s length : %d\n",key_name[i],key_name_len[i]);
+	}
+	key_name_off[i] = file_length;
+
+	//get_key_name_off()
+	rewind(fp);
+	i = 0;
+	while(i++ < file_length) {
+		c = fgetc(fp);
+		//debug("%c",c);
+		if( c == key_name[key_name_get][0] ) {
+			//debug("\nget key_name[%d] :%c\n",key_name_get,c);
+			fseek(fp,-1,SEEK_CUR);
+			fgets(key_name_tmp,key_name_len[key_name_get]+1,fp);
+			if(!strcmp(key_name_tmp,key_name[key_name_get])){
+				debug("%s\n",key_name_tmp);
+				fseek(fp,-key_name_len[key_name_get],SEEK_CUR);
+				key_name_off[key_name_get] = ftell(fp);
+				fseek(fp,key_name_len[key_name_get],SEEK_CUR);
+				key_off[key_name_get] = ftell(fp);
+				 debug("%s name offset : %d\tkey offset : %d\n",key_name[key_name_get],key_name_off[key_name_get],key_off[key_name_get]);
+				key_name_get++;
+			}
+			memset(key_name_tmp,0,20);
+		}
+	}
+
+#ifdef DEBUG
+	get_key_all(fp, key_off, key_name_off,PUBKEY_TYPES);
+#endif
+	ret += get_RSA2048_E(fp, key_off, key_t->RSA2048_E);
+	ret += get_RSA2048_N(fp, key_off, key_name_off, key_t->RSA2048_N);
+
+	if(ret!=SUCCESS)
+	    printf("Some action failed !\n");
+
+	fclose(fp);
+	fp = NULL;
+	return 0;
+}
+
 
